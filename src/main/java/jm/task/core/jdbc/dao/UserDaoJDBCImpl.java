@@ -15,12 +15,13 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        try (Statement statement = connect.createStatement()) {
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS User " +
-                    "(id BIGINT PRIMARY KEY AUTO_INCREMENT," +
-                    " name VARCHAR(255) NOT NULL," +
-                    " lastName VARCHAR(255) NOT NULL," +
-                    " age TINYINT NOT NULL)");
+        try (PreparedStatement preparedStatement =
+                     connect.prepareStatement("CREATE TABLE IF NOT EXISTS User " +
+                             "(id BIGINT PRIMARY KEY AUTO_INCREMENT," +
+                             " name VARCHAR(255) NOT NULL," +
+                             " lastName VARCHAR(255) NOT NULL," +
+                             " age TINYINT NOT NULL)")) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -28,8 +29,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         String sqlDrop = "DROP TABLE IF EXISTS User";
-        try (Statement statement = connect.createStatement()) {
-            statement.executeUpdate(sqlDrop);
+        try (PreparedStatement preparedStatement = connect.prepareStatement(sqlDrop)) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -67,7 +68,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 user.setId(resultSet.getLong("id"));
                 list.add(user);
             }
-            for (User user: list) {
+            for (User user : list) {
                 System.out.println(user);
             }
         } catch (SQLException e) {
@@ -78,8 +79,8 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         String sqlClean = "TRUNCATE TABLE User";
-        try (Statement statement = connect.createStatement()) {
-            statement.executeUpdate(sqlClean);
+        try (PreparedStatement preparedStatement = connect.prepareStatement(sqlClean)) {
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
